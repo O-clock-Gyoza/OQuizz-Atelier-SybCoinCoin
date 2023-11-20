@@ -78,4 +78,5 @@ Tag.belongsToMany(Quiz, {
     foreignKey: 'tag_id',
 });
 
+// on export les modele modifié (ajout les liaison)
 module.exports = { Answer, Level, Question, Quiz, Tag, User };

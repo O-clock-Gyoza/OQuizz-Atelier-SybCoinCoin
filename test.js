@@ -88,10 +88,12 @@ const {Answer, Level, Question, Quiz, Tag, User} = require('./app/models');
 
   /* Tag -> Question -> User */
 Tag.findByPk(1,{
-  include: [{
-    association: "quizList",
-    include: ["author"]
-  }]
+  include: [
+    
+    { association: "quizList", include: ["author"] }
+]
+
+
 }).then( (tag) => {
   let message = '';
   for (let quiz of tag.quizList) {
