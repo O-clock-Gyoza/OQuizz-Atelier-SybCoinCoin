@@ -8,6 +8,10 @@ const app = express();
 
 const router = require("./app/router");
 
+const session = require("express-session");
+
+const userMiddleware = require("./app/middlewares/user");
+
 
 //------ mise en place d'express
 
@@ -20,6 +24,17 @@ app.use(express.static(path.join(__dirname,"./assets")));
 // middleware (body parser) permettant de construire la reponse "body"
 app.use(express.urlencoded({extended: true}));
 
+// middlewhere de seeson
+app.use(session(
+    {
+        saveUninitialized: true,
+        resave: true,
+        secret: "sflkjsdfj sdfoih ijshdfo qsdf sqfjh"
+    }
+));
+
+// sert a renseigner les locals (accessible dans les ejs)
+app.use(userMiddleware);
 
 // middleware pour le routeur externalise
 app.use(router);

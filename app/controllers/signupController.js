@@ -19,18 +19,19 @@ const signupController = {
             1 verifier si les champs sont valides
                 
                 les password sont egaux 
+                limit du password : au moin 4 chars
                 si l'email est valide
 
-            2 verifier si l'email n'est pas deja dans la base
+            2 verifier si l'email est deja dans la base
         */
 
         console.log("req.body.email ", req.body.email);
 
-        if(!emailValidator.validate(req.body.email))
-        {
-            return res.render("signup", {error: "Cet email n'est pas valide"});
-        }
 
+
+        // verification du password
+
+        // les password sont egaux
         if (req.body.password !== req.body.passwordConfirm) 
         {
             return res.render('signup', {
@@ -38,12 +39,47 @@ const signupController = {
             });
         }
 
-        /**
-        
-            AUTRE VERIFICATION 
-        
-        */
+        // le password doit faire au moins 4 caracteres
+        if (req.body.password.length <  4) 
+        {
+            return res.render('signup', {
+              error: "Le password doit faire au moins 4 caractères."
+            });
+        }
 
+        // verification de l'email
+        if(!emailValidator.validate(req.body.email))
+        {
+            return res.render("signup", {
+                error: "Cet email n'est pas valide"
+            });
+        }
+
+        // verifier si l'email est dans la base
+
+        try{
+
+            let userintable = await User.findOne(
+                {
+                    where: {
+                        email: req.body.email
+                    }
+                }
+            )
+            // il trouve un utilisateur donc erreur
+            // on ne peut inscrire que ceux qui ne sont pas deja dans la base
+            if(userintable)
+            {
+                return res.render("signup", {
+                    error: "Cet email est déjà inscrit dans la base"
+                });
+            }
+        }
+        catch(err)
+        {
+            console.log(err);
+            res.status(500).send(err);
+        }
 
         // une fois que c'est ok 
 
@@ -55,9 +91,8 @@ const signupController = {
         // on ne peut retrouver la password qu'en hash a nouveau celui ci
         // et en le comparant.
 
-
         // on créer un nouvel user
-        let user = new User(
+        let newUser = new User(
             
             {
                 // value des propriété
@@ -69,11 +104,18 @@ const signupController = {
              }
         );
 
-        await user.save(); // sauvegarde dans la dtb
+        try{
+            await newUser.save(); // sauvegarde dans la dtb
 
-        // on renvois la page "login"
-        res.render("/login");
-
+            // on renvois la page "login"
+            res.redirect("/login");
+    
+        }
+        catch(err)
+        {
+            console.log(err);
+            res.status(500).send(err);
+        }
 
     }
 

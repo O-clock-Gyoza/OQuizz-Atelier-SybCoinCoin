@@ -31,6 +31,10 @@
                 </form>
             </div>
         </div>
+        <% if(error) { %>
 
+            <div> <%= error %> </div>
+    
+            <% } %>
 
 <%- include('partials/footer') %>

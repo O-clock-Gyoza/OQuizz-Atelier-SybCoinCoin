@@ -12,7 +12,7 @@ class User extends Sequelize.Model {
 User.init({
   email: Sequelize.STRING,
   password: Sequelize.STRING,
-  firstname: Sequelize.STRING,
+  firstname: Sequelize.STRING, 
   lastname: Sequelize.STRING
 }, {
   sequelize,
