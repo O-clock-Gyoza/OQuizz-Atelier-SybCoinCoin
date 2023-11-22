@@ -14,7 +14,7 @@ const quizController = {
                    include: [
                         "tags", // fonction avec une association "nue" {association : "tags"}
                         "author",
-                        { association: "questions", include: ["answers","level"] } // join appartir de questions
+                        { association: "questions", include: ["answers","level","good_answer"] } // join appartir de questions
                     ]
                 }
             )

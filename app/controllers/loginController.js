@@ -17,6 +17,16 @@ const loginController = {
     async loginAction(req, res)
     {
 
+
+        // le password doit faire au moins 4 caracteres
+        if (req.body.password.length <  4) 
+        {
+            return res.render('signup', {
+              error: "Le password doit faire au moins 4 caractères."
+            });
+        }
+
+
         // verification de l'email
         if(!emailValidator.validate(req.body.email))
         {
@@ -24,6 +34,7 @@ const loginController = {
                 error: "Cet email n'est pas valide"
             });
         }
+
 
         // on recupere l'objet use a partir de la base de donné et de l'info email
 
@@ -50,7 +61,7 @@ const loginController = {
 
             // bcrypt via cette fonction crypt req.body.password, puis la compare a
             // user.pasword qui est crypté
-            let validPassword = bcrypt.compare(req.body.password, user.password)
+            let validPassword = bcrypt.compare(req.body.password, user.password);
 
 
             // si le mot de passe n'est pas valid
@@ -80,6 +91,18 @@ const loginController = {
 
         // on enleve des infos les donné sensible
         delete req.session.user.password;
+
+        //----
+        //prendre en compte le check
+
+        //si il est coché
+        if(req.body.check.value == "remeber-me")
+        {   
+            req.session.maxAge = (1000 * 60 * 60 * 24) * 365;
+        }
+
+
+        //--------
 
         res.redirect("/");
 

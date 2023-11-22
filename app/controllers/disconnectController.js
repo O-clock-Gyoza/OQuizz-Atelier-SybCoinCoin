@@ -9,7 +9,6 @@ const disconnectController = {
         
         res.redirect("/login");
 
-
     }
 
 }

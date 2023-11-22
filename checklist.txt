@@ -1,0 +1,122 @@
+1> creer le projet, npm init / install
+> installer le module necessaire.
+
+2> projet dynamique > base de donnée, installer la database
+
+3> mettre le serveur en place : systeme de base express / ejs
+
+4 > transformer html vers ejs
+
+5 > routeur / controller
+
+6 > Mise en place du model (ici avec sequelize)
+
+    > 1 Model par entitié (avec le nom de l'entité) on y renseigne les proprété et les methodes
+    > faire les liaisons : une liaison a 2 entitée, donc il faut ecrire les 2 point de vu de la liaison (reciproque)
+
+    pour une liaisons question / reponse
+
+    la question a plusieurs reponse 
+    la reponse appartient a une question :
+
+    Question.hasMany(Answer, ... ), la reciproque : Answer.belongsTo(Question, ... )
+
+    c'est la meme liaison donc la meme foreignKey 
+
+    l'alias : permet de nommer l'objet a apeller de maniere "naturel"
+    exemple on attend que la question ai plusieurs reponse
+    donc on va nomme l'alias (as) au pluriel  : as "answers"
+
+
+    WARNING : On require les Model a partir de model/index.js
+    pour que la classe beneficie des liaisons.
+
+7 > dynamisation > réquete (sequelize)
+
+requete : 
+
+<methode>, findAll, findByPk, findOne
+
+Model.<method>()
+
+
+exemple :
+
+trouver tout les tag
+
+Tag.findAll();
+
+
+trouver tout les tags et join les quizzes lié pour chaque tag
+
+Tag.findAll(
+    {
+        include: ["quizList"]
+    }
+)
+
+
+
+//--------------------
+
+trouver tout les tags, joindre les quizzes lier pour chaque tag et lié les user (alias author) pour chaqu'un des quiz
+
+Tag.findAll(
+    {
+        include: [
+            {association : "quizzes", include: ["author"]}
+            
+            ]
+    }
+)
+
+ATENTION l'apellation des éléments dependent des alias dans les liaison sequezile.
+
+
+on prend tout les reponse de la question [idquestion]
+Question.findByPk( idquestion , {include : ["answers"]})
+
+
+on prend la bonne reponse de la question [idquestion]
+Question.findByPk( idquestion , {include : ["good_answer"]})
+
+
+8. inscription
+
+    ca passe des formulaires => capté les infos via le POST
+
+    pour que la data en post soit lu coté serveur il faut mettre en place un bodyparser (middleware d'express);
+
+    il faut SYSTEMATIQUEMENT verifier les datas reçues.
+    (formatage, presence dans la datas, etc....)
+
+    si on veut enregistré une donné sensbile (password)
+
+    il faut hacher le password, via un module (on utilise bcrypt )
+    avant de l'envoyer
+
+9. authentification
+    permet de savoir si votre user est connecté
+
+    on passe par la creation d'une session : cela creer un cookie qui enregistrer un fichier dans l'ordinateur client
+
+    pour exploter la presence du cookie avec l'information "connecté",
+    on creer un middleware pour renseigner les "locals" avec l'information du cookie.
+
+    Les locals peuvent etre exploité dans les ejs.
+
+    pour sortir se deconnecter il suffit d'effacer l'information presente dans le cookie (et par effet de cascade dans le middle, effacera la refernece de l'in dans le locals)
+
+    
+
+
+
+
+
+
+
+
+
+
+
+

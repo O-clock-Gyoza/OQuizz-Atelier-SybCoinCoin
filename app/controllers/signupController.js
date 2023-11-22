@@ -25,11 +25,20 @@ const signupController = {
             2 verifier si l'email est deja dans la base
         */
 
-        console.log("req.body.email ", req.body.email);
+      //  console.log("req.body.email ", req.body.email);
 
 
 
         // verification du password
+
+
+        // le password doit faire au moins 4 caracteres
+        if (req.body.password.length <  4) 
+        {
+            return res.render('signup', {
+              error: "Le password doit faire au moins 4 caractères."
+            });
+        }
 
         // les password sont egaux
         if (req.body.password !== req.body.passwordConfirm) 
@@ -39,13 +48,6 @@ const signupController = {
             });
         }
 
-        // le password doit faire au moins 4 caracteres
-        if (req.body.password.length <  4) 
-        {
-            return res.render('signup', {
-              error: "Le password doit faire au moins 4 caractères."
-            });
-        }
 
         // verification de l'email
         if(!emailValidator.validate(req.body.email))
@@ -59,7 +61,7 @@ const signupController = {
 
         try{
 
-            let userintable = await User.findOne(
+            let userInTable = await User.findOne(
                 {
                     where: {
                         email: req.body.email
@@ -68,7 +70,7 @@ const signupController = {
             )
             // il trouve un utilisateur donc erreur
             // on ne peut inscrire que ceux qui ne sont pas deja dans la base
-            if(userintable)
+            if(userInTable)
             {
                 return res.render("signup", {
                     error: "Cet email est déjà inscrit dans la base"
